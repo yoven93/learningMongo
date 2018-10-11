@@ -1,5 +1,6 @@
 package com.accenture;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,8 +84,7 @@ public class LearningMongo3Application {
 				.then(companyRepository.save(company2))
 				.then(workHourRepository.save(workHour1))
 				.then(workHourRepository.save(workHour2))
-				.subscribe();
-			
+				.subscribe();	
 		};
 	}
 }

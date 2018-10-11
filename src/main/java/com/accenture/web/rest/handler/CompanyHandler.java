@@ -1,19 +1,15 @@
 package com.accenture.web.rest.handler;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import com.accenture.domain.Company;
-import com.accenture.domain.User;
-import com.accenture.domain.WorkHour;
 import com.accenture.repository.CompanyRepository;
 import com.accenture.repository.WorkHourRepository;
 import com.accenture.service.CompanyService;
-import com.accenture.web.rest.dto.AttributeDateRequestDTO;
 import com.accenture.web.rest.dto.RequestDTO;
 
 import lombok.AllArgsConstructor;
@@ -34,8 +30,8 @@ public class CompanyHandler {
 	public Mono<ServerResponse> findAllCompanies(ServerRequest serverRequest) {
 
 		RequestDTO obj  = new RequestDTO();
-		
-		companyService.findAllCompanies()
+					
+		Flux<RequestDTO> flux = companyService.findAllCompanies()
 			.flatMap(company -> {
 				System.out.println("Company: " + company.getCompanyName());
 				obj.setCompanyName(company.getCompanyName());
@@ -53,13 +49,27 @@ public class CompanyHandler {
 			})
 			.flatMap(user -> {
 				System.out.println("User: " + user.getEmail());
-				obj.setUsername(user.getUsername());
 				obj.setUserEmail(user.getEmail());
-				return Mono.just(user);
+				obj.setUsername(user.getUsername());
+				
+				// Hard coded userEmail and project name
+				// This will return the same flux of work hours for all users
+				return workHourRepository.findByUserEmailAndDateBetweenAndProjectName("y@y.com", LocalDate.of(2018, 10, 1), LocalDate.of(2018, 10, 31), "P1");
+			})
+			.flatMap(workHour -> {
+				System.out.println("WorkHour: " + workHour);
+				RequestDTO requestDTO = new RequestDTO();
+				requestDTO.setUserEmail(obj.getUserEmail());
+				requestDTO.setCompanyName(obj.getCompanyName());
+				requestDTO.setUsername(obj.getUsername());
+				requestDTO.setProjectName(obj.getProjectName());
+				requestDTO.setBusinessUnit(obj.getBusinessUnit());
+				return Mono.just(requestDTO);
 			});
-
+			
 		
-		return ServerResponse.ok().body(null ,RequestDTO.class);
+		
+		return ServerResponse.ok().body(flux ,RequestDTO.class);
 		
 		
 //		RequestDTO requestDTO = new RequestDTO();
@@ -83,6 +93,7 @@ public class CompanyHandler {
 //					requestDTO.setBusinessUnit(obj.getBusinessUnit());
 //					return Mono.just(requestDTO);
 //				});
+		
 	}
 	
 	/**
