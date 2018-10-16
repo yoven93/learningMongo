@@ -64,16 +64,34 @@ public class LearningMongo3Application {
 			
 			
 			WorkHour workHour1 = new WorkHour();
-			workHour1.setUser(user1);
+			workHour1.setUser(user2);
 			workHour1.setProjectName("P1");
 			workHour1.setAttribute("1.0");
 			workHour1.setDate(LocalDate.of(2018, 10, 10));
 			
 			WorkHour workHour2 = new WorkHour();
-			workHour2.setUser(user1);
+			workHour2.setUser(user2);
 			workHour2.setProjectName("P1");
 			workHour2.setAttribute("2.0");
 			workHour2.setDate(LocalDate.of(2018, 10, 11));
+			
+			WorkHour workHour3 = new WorkHour();
+			workHour3.setUser(user3);
+			workHour3.setProjectName("P2");
+			workHour3.setAttribute("5.0");
+			workHour3.setDate(LocalDate.of(2018, 10, 11));
+			
+			WorkHour workHour4 = new WorkHour();
+			workHour4.setUser(user5);
+			workHour4.setProjectName("P3");
+			workHour4.setAttribute("10.0");
+			workHour4.setDate(LocalDate.of(2018, 10, 11));
+			
+			WorkHour workHour5 = new WorkHour();
+			workHour5.setUser(user5);
+			workHour5.setProjectName("P3");
+			workHour5.setAttribute("15.0");
+			workHour5.setDate(LocalDate.of(2018, 10, 11));
 			
 			// Clear database and then insert users and companies
 			companyRepository.deleteAll()
@@ -81,9 +99,11 @@ public class LearningMongo3Application {
 				.then(workHourRepository.deleteAll())
 				.thenMany(userRepository.saveAll(userFlux))
 				.then(companyRepository.save(company1))
-				.then(companyRepository.save(company2))
 				.then(workHourRepository.save(workHour1))
 				.then(workHourRepository.save(workHour2))
+				.then(workHourRepository.save(workHour3))
+				.then(workHourRepository.save(workHour4))
+				.then(workHourRepository.save(workHour5))
 				.subscribe();	
 		};
 	}
